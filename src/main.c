@@ -2,6 +2,7 @@
 #include "dyna.h"
 
 #ifdef NDEBUG
+// we still want our asserts to work when we test behavior of NDEBUG builds
 #undef NDEBUG
 #include <assert.h>
 #define NDEBUG
@@ -14,7 +15,7 @@
 #define TEST_START() (printf ("Running test: %s\n", __func__))
 #define FAIL_PRINT(msg) (fprintf (stderr, "%s: " msg "\n", __func__))
 
-int
+static int
 DynA_CanAllocateArrOfSize1 (void)
 {
   TEST_START ();
@@ -29,7 +30,8 @@ DynA_CanAllocateArrOfSize1 (void)
   return 0;
 }
 
-int
+#ifdef NDEBUG
+static int
 DynA_ReturnsNULLWhenElSizeIsZero (void)
 {
   TEST_START ();
@@ -37,12 +39,13 @@ DynA_ReturnsNULLWhenElSizeIsZero (void)
   return a == NULL;
 }
 
-void
+static void
 DynA_FreeBehavesWellOnNULLInput (void)
 {
   TEST_START ();
   DynA_free (NULL);
 }
+#endif /* NDEBUG */
 
 int
 main (void)
@@ -53,5 +56,6 @@ main (void)
   assert (DynA_ReturnsNULLWhenElSizeIsZero ());
   DynA_FreeBehavesWellOnNULLInput ();
 #endif /* NDEBUG */
+
   return 0;
 }
