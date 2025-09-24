@@ -48,6 +48,23 @@ DynA_DefaultCapacityIs1 (void)
 }
 
 static int
+DynA_DefaultSizeIs0 (void)
+{
+  TEST_START ();
+  DynamicArr_t *a = DynA_alloc (1);
+  if (!a)
+    {
+      FAIL_PRINT ("Out of memory error.");
+      return 0;
+    }
+
+  const size_t size = DynA_get_size (a);
+  DynA_free (a);
+
+  return size == 0;
+}
+
+static int
 DynA_ResizeCanDoubleOriginalSize (void)
 {
   TEST_START ();
@@ -110,6 +127,13 @@ DynA_GetCapReturnsZeroOnNULLInput (void)
 }
 
 static int
+DynA_GetSizeReturnsZeroOnNULLInput (void)
+{
+  TEST_START ();
+  return DynA_get_size (NULL) == 0;
+}
+
+static int
 DynA_ResizeReturnsNonZeroOnNULLInput (void)
 {
   TEST_START ();
@@ -162,6 +186,7 @@ main (void)
 {
   assert (DynA_CanAllocateArrOfSize1 ());
   assert (DynA_DefaultCapacityIs1 ());
+  assert (DynA_DefaultSizeIs0 ());
   assert (DynA_ResizeCanDoubleOriginalSize ());
   assert (DynA_ResizeCanReduceSizeOfArray ());
 
@@ -169,6 +194,7 @@ main (void)
   assert (DynA_ReturnsNULLWhenElSizeIsZero ());
   DynA_FreeBehavesWellOnNULLInput ();
   assert (DynA_GetCapReturnsZeroOnNULLInput ());
+  assert (DynA_GetSizeReturnsZeroOnNULLInput ());
   assert (DynA_ResizeReturnsNonZeroOnNULLInput ());
   assert (DynA_ResizeReturnsNonZeroOnZeroNewCap ());
   assert (DynA_AtBehavesWellOnNULLInput ());
