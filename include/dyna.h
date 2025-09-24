@@ -27,10 +27,24 @@ void DynA_free (DynamicArr_t *a);
 size_t DynA_get_capacity (DynamicArr_t *a);
 
 /**
+ *  Returns the logical size of `a` in bytes. Returns 0 upon NULL input when
+ *  NDEBUG is defined, otherwise NULL input is treated as an unhandled
+ *  exception.
+ */
+size_t DynA_get_size (DynamicArr_t *a);
+
+/**
  *  Changes the capacity of `a` to `new_cap`. When NDEBUG is undefined, a NULL
  *  `a` or `new_cap` value <= 0 is treated as an unhandled exception. Otherwise
  *  this returns non-zero in those cases.
  */
 int DynA_resize (DynamicArr_t *a, size_t new_cap);
+
+/**
+ *  Returns the `i`-th element from `a`. When NDEBUG is undefined, a NULL `a`
+ *  or an invalid index is treated as an unhandled exception. When NDEBUG is
+ *  defined, this function returns NULL in those cases.
+ */
+void *DynA_at (DynamicArr_t *a, size_t i);
 
 #endif /* _DYNA_DYNAMIC_ARRAY_LIBRARY_H_ */

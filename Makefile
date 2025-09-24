@@ -1,6 +1,10 @@
-CFLAGS =-std=c99 -Wpedantic -Wextra -Werror -Wall -Wstrict-aliasing=3 -g
+CFLAGS =-g -O0 -std=c99 -Wpedantic -Wextra -Werror -Wall -Wstrict-aliasing=3
 CFLAGS += -Wwrite-strings -Wvla -Wcast-align=strict -Wstrict-prototypes
 CFLAGS += -Wstringop-overflow=4 -Wshadow -fanalyzer
+
+ifdef NDEBUG
+  CFLAGS += -DNDEBUG
+endif
 
 TEST_TARGET = DynATest
 SRC_DIR = src

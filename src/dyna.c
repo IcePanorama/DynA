@@ -61,6 +61,16 @@ DynA_get_capacity (DynamicArr_t *a)
   return a->capacity;
 }
 
+size_t
+DynA_get_size (DynamicArr_t *a)
+{
+  assert (a);
+  if (!a)
+    return 0;
+
+  return a->size;
+}
+
 int
 DynA_resize (DynamicArr_t *a, size_t new_cap)
 {
@@ -84,4 +94,19 @@ DynA_resize (DynamicArr_t *a, size_t new_cap)
   a->capacity = new_cap;
   a->data = tmp;
   return 0;
+}
+
+void *
+DynA_at (DynamicArr_t *a, size_t i)
+{
+  assert (a);
+  if (!a)
+    return NULL;
+
+  size_t size = DynA_get_size (a);
+  assert (i < size);
+  if (i >= size)
+    return NULL;
+
+  return (void *)((char *)(a->data) + (a->el_size * i));
 }

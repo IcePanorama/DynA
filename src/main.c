@@ -132,6 +132,29 @@ DynA_ResizeReturnsNonZeroOnZeroNewCap (void)
 
   return ret;
 }
+
+static int
+DynA_AtBehavesWellOnNULLInput (void)
+{
+  TEST_START ();
+  return DynA_at (NULL, 0) == NULL;
+}
+
+static int
+DynA_AtReturnsNullOnInvalidIdx (void)
+{
+  TEST_START ();
+  DynamicArr_t *a = DynA_alloc (1);
+  if (!a)
+    {
+      FAIL_PRINT ("Out of memory error.");
+      return 0;
+    }
+
+  void *ret = DynA_at (a, 0);
+  DynA_free (a);
+  return ret == NULL;
+}
 #endif /* NDEBUG */
 
 int
@@ -148,6 +171,8 @@ main (void)
   assert (DynA_GetCapReturnsZeroOnNULLInput ());
   assert (DynA_ResizeReturnsNonZeroOnNULLInput ());
   assert (DynA_ResizeReturnsNonZeroOnZeroNewCap ());
+  assert (DynA_AtBehavesWellOnNULLInput ());
+  assert (DynA_AtReturnsNullOnInvalidIdx ());
 #endif /* NDEBUG */
 
   return 0;
