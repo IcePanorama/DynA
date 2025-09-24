@@ -38,7 +38,7 @@ DynA_DefaultCapacityIs1 (void)
   if (!a)
     {
       FAIL_PRINT ("Out of memory error.");
-      return -1;
+      return 0;
     }
 
   const size_t cap = DynA_get_capacity (a);
@@ -47,7 +47,6 @@ DynA_DefaultCapacityIs1 (void)
   return cap == 1;
 }
 
-/*
 static int
 DynA_ResizeCanDoubleOriginalSize (void)
 {
@@ -56,7 +55,7 @@ DynA_ResizeCanDoubleOriginalSize (void)
   if (!a)
     {
       FAIL_PRINT ("Out of memory error.");
-      return -1;
+      return 0;
     }
 
   const size_t old = DynA_get_capacity (a);
@@ -76,7 +75,7 @@ DynA_ResizeCanReduceSizeOfArray (void)
   if (!a)
     {
       FAIL_PRINT ("Out of memory error.");
-      return -1;
+      return 0;
     }
 
   DynA_resize (a, 2);
@@ -84,9 +83,8 @@ DynA_ResizeCanReduceSizeOfArray (void)
   const size_t new = DynA_get_capacity (a);
   DynA_free (a);
 
-  return new = 1;
+  return new == 1;
 }
-*/
 
 #ifdef NDEBUG
 static int
@@ -117,10 +115,8 @@ main (void)
 {
   assert (DynA_CanAllocateArrOfSize1 ());
   assert (DynA_DefaultCapacityIs1 ());
-  /*
-  assert (DynA_ResizeCanDoubleOriginalSize () == 0);
-  assert (DynA_ResizeCanReduceSizeOfArray () == 0);
-  */
+  assert (DynA_ResizeCanDoubleOriginalSize ());
+  assert (DynA_ResizeCanReduceSizeOfArray ());
 
 #ifdef NDEBUG
   assert (DynA_ReturnsNULLWhenElSizeIsZero ());

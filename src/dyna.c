@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct _DynamicArr_s
 {
@@ -58,4 +59,29 @@ DynA_get_capacity (DynamicArr_t *a)
     return 0;
 
   return a->capacity;
+}
+
+int
+DynA_resize (DynamicArr_t *a, size_t new_cap)
+{
+  assert (a);
+  assert (new_cap > 0);
+  if ((!a) || (new_cap <= 0))
+    return -1;
+
+  void *tmp = realloc (a->data, new_cap * a->el_size);
+  assert (tmp);
+  if (tmp == NULL)
+    return -1;
+
+  if (new_cap > a->capacity)
+    {
+      // Zero out new elements
+      memset ((char *)tmp + (a->el_size * a->capacity), 0,
+              (new_cap - a->capacity) * a->el_size);
+    }
+
+  a->capacity = new_cap;
+  a->data = tmp;
+  return 0;
 }

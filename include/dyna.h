@@ -26,4 +26,11 @@ void DynA_free (DynamicArr_t *a);
  */
 size_t DynA_get_capacity (DynamicArr_t *a);
 
+/**
+ *  Changes the capacity of `a` to `new_cap`. When NDEBUG is undefined, a NULL
+ *  `a` or `new_cap` value <= 0 is treated as an unhandled exception. Otherwise
+ *  this returns non-zero in those cases.
+ */
+int DynA_resize (DynamicArr_t *a, size_t new_cap);
+
 #endif /* _DYNA_DYNAMIC_ARRAY_LIBRARY_H_ */
