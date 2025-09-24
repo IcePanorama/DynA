@@ -108,6 +108,30 @@ DynA_GetCapReturnsZeroOnNULLInput (void)
   TEST_START ();
   return DynA_get_capacity (NULL) == 0;
 }
+
+static int
+DynA_ResizeReturnsNonZeroOnNULLInput (void)
+{
+  TEST_START ();
+  return DynA_resize (NULL, 2);
+}
+
+static int
+DynA_ResizeReturnsNonZeroOnZeroNewCap (void)
+{
+  TEST_START ();
+  DynamicArr_t *a = DynA_alloc (1);
+  if (!a)
+    {
+      FAIL_PRINT ("Out of memory error.");
+      return 0;
+    }
+
+  int ret = DynA_resize (a, 0);
+  DynA_free (a);
+
+  return ret;
+}
 #endif /* NDEBUG */
 
 int
@@ -122,6 +146,8 @@ main (void)
   assert (DynA_ReturnsNULLWhenElSizeIsZero ());
   DynA_FreeBehavesWellOnNULLInput ();
   assert (DynA_GetCapReturnsZeroOnNULLInput ());
+  assert (DynA_ResizeReturnsNonZeroOnNULLInput ());
+  assert (DynA_ResizeReturnsNonZeroOnZeroNewCap ());
 #endif /* NDEBUG */
 
   return 0;
