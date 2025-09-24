@@ -103,6 +103,25 @@ DynA_ResizeCanReduceSizeOfArray (void)
   return new == 1;
 }
 
+static int
+DynA_AppendingSingleElementWorksAsExpected (void)
+{
+  TEST_START ();
+  DynamicArr_t *a = DynA_alloc (1);
+  if (!a)
+    {
+      FAIL_PRINT ("Out of memory error.");
+      return 0;
+    }
+
+  char exp = 'a';
+  DynA_append (a, (void *)&exp);
+  char act = *((char *)DynA_at (a, 0));
+  DynA_free (a);
+
+  return exp == act;
+}
+
 #ifdef NDEBUG
 static int
 DynA_ReturnsNULLWhenElSizeIsZero (void)
@@ -189,6 +208,7 @@ main (void)
   assert (DynA_DefaultSizeIs0 ());
   assert (DynA_ResizeCanDoubleOriginalSize ());
   assert (DynA_ResizeCanReduceSizeOfArray ());
+  assert (DynA_AppendingSingleElementWorksAsExpected ());
 
 #ifdef NDEBUG
   assert (DynA_ReturnsNULLWhenElSizeIsZero ());

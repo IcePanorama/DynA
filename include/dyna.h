@@ -47,4 +47,11 @@ int DynA_resize (DynamicArr_t *a, size_t new_cap);
  */
 void *DynA_at (DynamicArr_t *a, size_t i);
 
+/**
+ *  Appends `el` to `a`. When NDEBUG is undefined, a NULL `a` or `el` is
+ *  treated as an unhandled exception. Otherwise, this function returns
+ *  non-zero in those cases.
+ */
+int DynA_append (DynamicArr_t *a, void *el);
+
 #endif /* _DYNA_DYNAMIC_ARRAY_LIBRARY_H_ */

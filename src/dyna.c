@@ -110,3 +110,26 @@ DynA_at (DynamicArr_t *a, size_t i)
 
   return (void *)((char *)(a->data) + (a->el_size * i));
 }
+
+static int
+double_size (DynamicArr_t a[static 1])
+{
+  return DynA_resize (a, a->capacity * 2);
+}
+
+int
+DynA_append (DynamicArr_t *a, void *el)
+{
+  assert (a);
+  assert (el);
+  if (!a || !el)
+    return -1;
+
+  if ((a->size == a->capacity) && (double_size (a) != 0))
+    return -1;
+
+  void *ptr = (void *)((char *)(a->data) + (a->el_size * a->size));
+  memcpy (ptr, el, a->el_size);
+  a->size++;
+  return 0;
+}
