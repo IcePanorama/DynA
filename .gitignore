@@ -1,5 +1,6 @@
 # Project specific
 DynATest
+compile_commands.json
 
 # Valgrind
 vgcore.*

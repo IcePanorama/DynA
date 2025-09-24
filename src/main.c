@@ -2,7 +2,7 @@
 #include "dyna.h"
 
 #ifdef NDEBUG
-// we still want our asserts to work when we test behavior of NDEBUG builds
+// we still want our local asserts to work when testing NDEBUG builds
 #undef NDEBUG
 #include <assert.h>
 #define NDEBUG
@@ -23,12 +23,70 @@ DynA_CanAllocateArrOfSize1 (void)
   if (!a)
     {
       FAIL_PRINT ("Failed to alloc array w/ el size of 1.");
-      return -1;
+      return 0;
     }
 
   DynA_free (a);
-  return 0;
+  return 1;
 }
+
+static int
+DynA_DefaultCapacityIs1 (void)
+{
+  TEST_START ();
+  DynamicArr_t *a = DynA_alloc (1);
+  if (!a)
+    {
+      FAIL_PRINT ("Out of memory error.");
+      return -1;
+    }
+
+  const size_t cap = DynA_get_capacity (a);
+  DynA_free (a);
+
+  return cap == 1;
+}
+
+/*
+static int
+DynA_ResizeCanDoubleOriginalSize (void)
+{
+  TEST_START ();
+  DynamicArr_t *a = DynA_alloc (1);
+  if (!a)
+    {
+      FAIL_PRINT ("Out of memory error.");
+      return -1;
+    }
+
+  const size_t old = DynA_get_capacity (a);
+  const size_t target = old * 2;
+  DynA_resize (a, target);
+  const size_t new = DynA_get_capacity (a);
+  DynA_free (a);
+
+  return new == target;
+}
+
+static int
+DynA_ResizeCanReduceSizeOfArray (void)
+{
+  TEST_START ();
+  DynamicArr_t *a = DynA_alloc (1);
+  if (!a)
+    {
+      FAIL_PRINT ("Out of memory error.");
+      return -1;
+    }
+
+  DynA_resize (a, 2);
+  DynA_resize (a, 1);
+  const size_t new = DynA_get_capacity (a);
+  DynA_free (a);
+
+  return new = 1;
+}
+*/
 
 #ifdef NDEBUG
 static int
@@ -45,16 +103,29 @@ DynA_FreeBehavesWellOnNULLInput (void)
   TEST_START ();
   DynA_free (NULL);
 }
+
+static int
+DynA_GetCapReturnsZeroOnNULLInput (void)
+{
+  TEST_START ();
+  return DynA_get_capacity (NULL) == 0;
+}
 #endif /* NDEBUG */
 
 int
 main (void)
 {
-  assert (DynA_CanAllocateArrOfSize1 () == 0);
+  assert (DynA_CanAllocateArrOfSize1 ());
+  assert (DynA_DefaultCapacityIs1 ());
+  /*
+  assert (DynA_ResizeCanDoubleOriginalSize () == 0);
+  assert (DynA_ResizeCanReduceSizeOfArray () == 0);
+  */
 
 #ifdef NDEBUG
   assert (DynA_ReturnsNULLWhenElSizeIsZero ());
   DynA_FreeBehavesWellOnNULLInput ();
+  assert (DynA_GetCapReturnsZeroOnNULLInput ());
 #endif /* NDEBUG */
 
   return 0;

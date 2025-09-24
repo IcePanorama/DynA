@@ -49,3 +49,13 @@ DynA_free (DynamicArr_t *a)
   free (a);
   a = NULL;
 }
+
+size_t
+DynA_get_capacity (DynamicArr_t *a)
+{
+  assert (a);
+  if (!a)
+    return 0;
+
+  return a->capacity;
+}
