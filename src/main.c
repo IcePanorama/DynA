@@ -1,12 +1,15 @@
 /** A collection of unit tests for the DynA library. */
 #include "dyna.h"
 
-#include <stdio.h>
-
 #ifdef NDEBUG
-#undef NDEBUG // for assert.h below
-#endif        /* NDEBUG */
+#undef NDEBUG
 #include <assert.h>
+#define NDEBUG
+#else /* not NDEBUG */
+#include <assert.h>
+#endif /* not NDEBUG */
+
+#include <stdio.h>
 
 #define TEST_START() (printf ("Running test: %s\n", __func__))
 #define FAIL_PRINT(msg) (fprintf (stderr, "%s: " msg "\n", __func__))
@@ -27,8 +30,28 @@ DynA_CanAllocateArrOfSize1 (void)
 }
 
 int
+DynA_ReturnsNULLWhenElSizeIsZero (void)
+{
+  TEST_START ();
+  DynamicArr_t *a = DynA_alloc (0);
+  return a == NULL;
+}
+
+void
+DynA_FreeBehavesWellOnNULLInput (void)
+{
+  TEST_START ();
+  DynA_free (NULL);
+}
+
+int
 main (void)
 {
-  assert (!DynA_CanAllocateArrOfSize1 ());
+  assert (DynA_CanAllocateArrOfSize1 () == 0);
+
+#ifdef NDEBUG
+  assert (DynA_ReturnsNULLWhenElSizeIsZero ());
+  DynA_FreeBehavesWellOnNULLInput ();
+#endif /* NDEBUG */
   return 0;
 }

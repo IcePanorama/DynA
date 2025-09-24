@@ -1,12 +1,13 @@
-CFLAGS =-std=c99 -Wpedantic -Wextra -Werror -Wall -Wstrict-aliasing=3
+CFLAGS =-std=c99 -Wpedantic -Wextra -Werror -Wall -Wstrict-aliasing=3 -g
 CFLAGS += -Wwrite-strings -Wvla -Wcast-align=strict -Wstrict-prototypes
 CFLAGS += -Wstringop-overflow=4 -Wshadow -fanalyzer
 
 TARGET = DynATest
 SRC_DIR = src
 INCL_DIR = include
-SRC = $(SRC_DIR)/main.c
-#INCL = $(INCL_DIR)/dyna.h
+SRC = $(SRC_DIR)/main.c \
+      $(SRC_DIR)/dyna.c
+INCL = $(INCL_DIR)/dyna.h
 
 FMT = clang-format
 STYLE = GNU
