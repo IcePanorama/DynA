@@ -14,6 +14,10 @@ struct _DynamicArr_s
 DynamicArr_t *
 DynA_alloc (size_t el_size)
 {
+  assert (el_size);
+  if (!el_size)
+    return NULL;
+
   DynamicArr_t *a = calloc (1, sizeof (DynamicArr_t));
   assert (a);
   if (!a)
