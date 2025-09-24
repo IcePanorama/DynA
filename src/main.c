@@ -14,6 +14,8 @@
 
 #define TEST_START() (printf ("Running test: %s\n", __func__))
 #define FAIL_PRINT(msg) (fprintf (stderr, "%s: " msg "\n", __func__))
+#define FAIL_PRINTF(msg, ...)                                                 \
+  (fprintf (stderr, "%s: " msg "\n", __func__, __VA_ARGS__))
 
 static int
 DynA_CanAllocateArrOfSize1 (void)
@@ -122,6 +124,41 @@ DynA_AppendingSingleElementWorksAsExpected (void)
   return exp == act;
 }
 
+static int
+DynA_Appending10ElementsWorksAsExpected (void)
+{
+  TEST_START ();
+  char input[10] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j' };
+  DynamicArr_t *a = DynA_alloc (1);
+  if (!a)
+    {
+      FAIL_PRINT ("Out of memory error.");
+      return 0;
+    }
+
+  for (int i = 0; i < 10; i++)
+    {
+      if (DynA_append (a, (void *)&input[i]) != 0)
+        {
+          FAIL_PRINTF ("Append failed on %d-th element: %c", i, input[i]);
+          return 0;
+        }
+    }
+
+  for (int i = 0; i < 10; i++)
+    {
+      char act = *((char *)DynA_at (a, i));
+      if (act != input[i])
+        {
+          FAIL_PRINTF ("Append failed: Expected %c, got %c.", input[i], act);
+          return 0;
+        }
+    }
+
+  DynA_free (a);
+  return 1;
+}
+
 #ifdef NDEBUG
 static int
 DynA_ReturnsNULLWhenElSizeIsZero (void)
@@ -198,6 +235,30 @@ DynA_AtReturnsNullOnInvalidIdx (void)
   DynA_free (a);
   return ret == NULL;
 }
+
+static int
+DynA_AppendBehavesWellOnNULLArrInput (void)
+{
+  TEST_START ();
+  char foo = 'a';
+  return DynA_append (NULL, &foo) != 0;
+}
+
+static int
+DynA_AppendBehavesWellOnNULLElInput (void)
+{
+  TEST_START ();
+  DynamicArr_t *a = DynA_alloc (1);
+  if (!a)
+    {
+      FAIL_PRINT ("Out of memory error.");
+      return 0;
+    }
+
+  int ret = DynA_append (a, NULL);
+  DynA_free (a);
+  return ret != 0;
+}
 #endif /* NDEBUG */
 
 int
@@ -209,6 +270,7 @@ main (void)
   assert (DynA_ResizeCanDoubleOriginalSize ());
   assert (DynA_ResizeCanReduceSizeOfArray ());
   assert (DynA_AppendingSingleElementWorksAsExpected ());
+  assert (DynA_Appending10ElementsWorksAsExpected ());
 
 #ifdef NDEBUG
   assert (DynA_ReturnsNULLWhenElSizeIsZero ());
@@ -219,6 +281,8 @@ main (void)
   assert (DynA_ResizeReturnsNonZeroOnZeroNewCap ());
   assert (DynA_AtBehavesWellOnNULLInput ());
   assert (DynA_AtReturnsNullOnInvalidIdx ());
+  assert (DynA_AppendBehavesWellOnNULLArrInput ());
+  assert (DynA_AppendBehavesWellOnNULLElInput ());
 #endif /* NDEBUG */
 
   return 0;
